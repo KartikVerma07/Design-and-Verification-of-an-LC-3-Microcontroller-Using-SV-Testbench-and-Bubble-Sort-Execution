@@ -43,13 +43,11 @@ Implements the **datapath (execution unit)** of the LC-3.
 - Components:
   - Register file (R0–R7)  
   - ALU (ADD, AND, NOT, etc.)  
-  - Shifter  
   - Program Counter (PC) and Incrementer  
   - Instruction Register (IR) and NZP flags  
-  - Address adders and multiplexers  
 - Executes instructions under the control signals from the Control Unit.
 
-### SV_Test_Env/
+### SV_Test_Env
 
 The **SystemVerilog test environment** verifies the LC-3 at the system level by running the bubble sort assembly program and checking its correctness against a golden reference model.  
 It is built from modular components, each serving a specific role:
@@ -84,17 +82,14 @@ It is built from modular components, each serving a specific role:
   The top-level environment module.  
   It instantiates the generator, driver, monitor, scoreboard, checker, and memory tap, and connects them via mailboxes/interfaces to enable transaction-level communication.
 
-- **test.sv**  
-  The main testbench file.  
-  - Instantiates the LC3_Top (the DUT).  
+- **lc3_top.sv**  
+  The main testbench file.   
   - Instantiates `env.sv` to bring together all verification components.  
   - Loads the **bubble sort assembly program** into memory.  
   - Manages the simulation (reset, clock, run, end condition).  
   - Final verdict is reported when the DONE flag is set in memory.
 
----
-
-Together, these files form a lightweight **SystemVerilog test environment (not UVM)** that:  
+Together, these files form a lightweight **SystemVerilog test environment** that:  
 1. Stimulates the LC-3 design,  
 2. Observes its behavior,  
 3. Checks execution against a golden reference,  
