@@ -1,0 +1,1 @@
+`define LC3_MEM(IDX) lc3_top.dut.u_memctl.u_mem.mem[int'(IDX)]
