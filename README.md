@@ -47,7 +47,7 @@ Implements the **datapath (execution unit)** of the LC-3.
   - Instruction Register (IR) and NZP flags  
 - Executes instructions under the control signals from the Control Unit.
 
-### SV_Test_Env
+## SV_Test_Env
 
 The **SystemVerilog test environment** verifies the LC-3 at the system level by running the bubble sort assembly program and checking its correctness against a golden reference model.  
 It is built from modular components, each serving a specific role:
