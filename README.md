@@ -94,7 +94,61 @@ Together, these files form a lightweight **SystemVerilog test environment** that
 2. Observes its behavior,  
 3. Checks execution against a golden reference,  
 4. Logs instruction flow (via PC tracing), and  
-5. Flags memory hazards (via assertions in mem_tap).  
+5. Flags memory hazards (via assertions in mem_tap).
+
+flowchart LR
+  %% ========= DUT & Internal Bind Taps =========
+  subgraph DUT["lc3_top.sv (DUT: LC-3 SoC)"]
+    CPU[["top_datapath\n(pc, ir, nzp, bus, control)"]]
+    MC[["memory_control.sv\n(MAR/MDR, mio_en, r/w)"]]
+    MEM[["memory.sv\n(RAM + INIT)"]]
+
+    CPU -->|ld_mar/ld_mdr, mio_en, r_w| MC
+    MC  -->|ready, mem_rdata| CPU
+    MC  --> MEM
+  end
+
+  %% ======= Interface =======
+  VIF[/"virtual_interface.sv\n(clk, reset, pc_obs, ir_obs,\nready_bit, mem_tap signals)"/]
+
+  %% ======= Bind modules tapping internal nets =======
+  BIND[["mc_bind_to_vif.sv\n(bind memory_control)\n• expose: mem_we, mem_re,\n  mem_addr, mem_wdata,\n  mem_rdata, mem_ready"]]
+  TAP[["mem_tap.sv\n• logs reads/writes\n• asserts consecutive write hazard"]]
+
+  %% ======= Testbench Env =======
+  subgraph ENV["SV_Test_Env"]
+    GEN[["generator.sv\n• creates scenarios / init seqs"]]
+    DRV[["driver.sv\n• applies reset\n• loads program/data\n• pokes DUT via VIF"]]
+    MON[["monitor.sv\n• samples pc/ir/ready\n• taps mem via VIF"]]
+    SB[["scoreboard.sv\n• logs PC on fetch\n• execution trace"]]
+    CHK[["lc3_checker.sv\n• golden reference stepper\n• compares regs/mem/PC"]]
+  end
+
+  %% ======= Connections between TB and DUT =======
+  VIF <--> CPU
+  VIF <--> MC
+  BIND -- bind --> MC
+  BIND --> VIF
+  TAP --> VIF
+
+  %% ======= Data/control flow =======
+  GEN --> DRV
+  DRV -->|reset + program load| VIF
+  VIF -->|drives reset into| DUT
+
+  %% Monitor + analysis
+  MON --> SB
+  MON --> CHK
+  MON --> TAP
+
+  %% Memory observation path
+  VIF -. mem_we/mem_re/mem_addr/mem_wdata/mem_rdata/mem_ready .-> MON
+  VIF -. same signals .-> TAP
+
+  %% Final results
+  CHK -->|pass/fail| SB
+  SB -->|final verdict| OUT[(Simulation Summary)]
+
 
 
   
