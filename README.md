@@ -96,5 +96,14 @@ Together, these files form a lightweight **SystemVerilog test environment** that
 4. Logs instruction flow (via PC tracing), and  
 5. Flags memory hazards (via assertions in mem_tap).
 
+## Test Results: Bubble Sort Execution
+
+The LC-3 processor was validated by running a bubble sort firmware written in LC-3 assembly.  
+The testbench compared the memory contents before and after execution, confirming that the array was sorted correctly.
+
+![Bubble Sort Test Output](TestOP.png)
+
+*Figure: Simulation log showing the **unsorted array**, the **sorted array (after execution)**, and the **PASS** message from the scoreboard and checker.*
+
   
 
