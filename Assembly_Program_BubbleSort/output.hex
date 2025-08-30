@@ -1,0 +1,49 @@
+@3000
+202A  // LD   R0, DATA_PTR
+2E27  // LD   R7, LEN_PTR
+63C0  // LDR  R1, R7, #0
+127F  // ADD  R1, R1, #-1
+0820  // BRn  DONE
+54A0  // AND  R2, R2, #0
+1AA1  // ADD  R5, R2, #1
+1E02  // ADD  R7, R0, R2
+67C0  // LDR  R3, R7, #0
+1E05  // ADD  R7, R0, R5
+69C0  // LDR  R4, R7, #0
+1CE0  // ADD  R6, R3, #0
+0803  // BRn  A_NEG
+1D20  // ADD  R6, R4, #0
+0811  // BRn  SWAP
+0E02  // BRnzp SAME_SIGN
+1D20  // ADD  R6, R4, #0
+0605  // BRzp NOSWAP
+9D3F  // NOT  R6, R4
+1DA1  // ADD  R6, R6, #1
+1CC6  // ADD  R6, R3, R6
+020A  // BRp  SWAP
+0E00  // BRnzp NOSWAP
+14A1  // ADD  R2, R2, #1
+1A60  // ADD  R5, R1, #0
+1B7F  // ADD  R5, R5, #-1
+9CBF  // NOT  R6, R2
+1DA1  // ADD  R6, R6, #1
+1B46  // ADD  R5, R5, R6
+07E8  // BRzp INNER
+127F  // ADD  R1, R1, #-1
+0FE4  // BRnzp OUTER
+1E05  // ADD  R7, R0, R5
+77C0  // STR  R3, R7, #0
+1E02  // ADD  R7, R0, R2
+79C0  // STR  R4, R7, #0
+0FF2  // BRnzp NOSWAP
+2E04  // LD   R7, DONE_PTR
+5DA0  // AND  R6, R6, #0
+1DA1  // ADD  R6, R6, #1
+7DC0  // STR  R6, R7, #0
+
+@3029
+3FFE  // LEN_PTR
+@302A
+3FFF  // DONE_PTR
+@302B
+4000  // DATA_PTR

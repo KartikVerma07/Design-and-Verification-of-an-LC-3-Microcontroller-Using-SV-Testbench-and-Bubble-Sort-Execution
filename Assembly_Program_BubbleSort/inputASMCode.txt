@@ -1,0 +1,57 @@
+3000: 202A    LD    R0, DATA_PTR
+3001: 2E27    LD    R7, LEN_PTR
+3002: 63C0    LDR   R1, R7, #0
+3003: 127F    ADD   R1, R1, #-1
+                                  OUTER:      ; x3004
+3004: 0820    BRn   DONE
+3005: 54A0    AND   R2, R2, #0
+                                  INNER:      ; x3006
+3006: 1AA1    ADD   R5, R2, #1
+3007: 1E02    ADD   R7, R0, R2
+3008: 67C0    LDR   R3, R7, #0
+3009: 1E05    ADD   R7, R0, R5
+300A: 69C0    LDR   R4, R7, #0
+300B: 1CE0    ADD   R6, R3, #0
+300C: 0803    BRn   A_NEG
+                                  A_NONNEG:   ; x300D
+300D: 1D20    ADD   R6, R4, #0
+300E: 0811    BRn   SWAP
+300F: 0E02    BRnzp SAME_SIGN
+                                  A_NEG:      ; x3010
+3010: 1D20    ADD   R6, R4, #0
+3011: 0605    BRzp  NOSWAP
+                                  SAME_SIGN:  ; x3012
+3012: 9D3F    NOT   R6, R4
+3013: 1DA1    ADD   R6, R6, #1
+3014: 1CC6    ADD   R6, R3, R6
+3015: 020A    BRp   SWAP
+3016: 0E00    BRnzp NOSWAP
+                                  NOSWAP:     ; x3017
+3017: 14A1    ADD   R2, R2, #1
+3018: 1A60    ADD   R5, R1, #0
+3019: 1B7F    ADD   R5, R5, #-1
+301A: 9CBF    NOT   R6, R2
+301B: 1DA1    ADD   R6, R6, #1
+301C: 1B46    ADD   R5, R5, R6
+301D: 07E8    BRzp  INNER
+
+301E: 127F    ADD   R1, R1, #-1
+301F: 0FE4    BRnzp OUTER
+                                  SWAP:       ; x3020
+3020: 1E05    ADD   R7, R0, R5
+3021: 77C0    STR   R3, R7, #0
+3022: 1E02    ADD   R7, R0, R2
+3023: 79C0    STR   R4, R7, #0
+3024: 0FF2    BRnzp NOSWAP
+                                  DONE:       ; x3025
+3025: 2E04    LD    R7, DONE_PTR     ;
+3026: 5DA0    AND   R6, R6, #0
+3027: 1DA1    ADD   R6, R6, #1
+3028: 7DC0    STR   R6, R7, #0
+
+                                  LEN_PTR:    ; x3029
+3029: 3FFE    .FILL x3FFE
+                                  DONE_PTR:   ; x302A
+302A: 3FFF    .FILL x3FFF
+                                  DATA_PTR:   ; x302B
+302B: 4000    .FILL x4000
